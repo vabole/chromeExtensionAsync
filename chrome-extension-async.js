@@ -93,6 +93,7 @@ const chromeP = {};
                     chromeP[apiName] = {};
                 }
                 chromeP[apiName][funcName] = promisify(m.bind(api), funcDef.cb);
+            }
             else
                 // Sub-API, recurse this func with the mapped props
                 applyMap(m, funcDef.props, apiName);
