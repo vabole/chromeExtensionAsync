@@ -1,5 +1,5 @@
 # Chrome Extension Async
-t
+
 [![npm version](http://img.shields.io/npm/v/chromep.svg)](https://www.npmjs.com/package/chromp)
 
 Chromep is a fork of (chrome-extension-async)[https://github.com/KeithHenry/chromeExtensionAsync] by Keith Henry.
