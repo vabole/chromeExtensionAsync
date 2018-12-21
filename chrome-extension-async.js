@@ -44,7 +44,7 @@ const chromeP = {};
 
                         // Chrome extensions always fire the callback, but populate chrome.runtime.lastError with exception details
                         if (chrome.runtime.lastError)
-                            // Return as an error for the awaited catch block
+                        // Return as an error for the awaited catch block
                             reject(new Error(chrome.runtime.lastError.message || `Error thrown by API ${chrome.runtime.lastError}`));
                         else {
                             if (parseCB) {
@@ -65,12 +65,12 @@ const chromeP = {};
         }
     }
 
-    /** Promisify all the known functions in the map 
+    /** Promisify all the known functions in the map
      * @param {object} api The Chrome native API to extend
      * @param {Array} apiMap Collection of sub-API and functions to promisify */
-    function applyMap(api, apiMap, apiName) {
+    function applyMap(api, apiMap, apiName, exportObj) {
         if (!api)
-            // Not supported by current permissions
+        // Not supported by current permissions
             return;
 
         for (let funcDef of apiMap) {
@@ -82,21 +82,17 @@ const chromeP = {};
             }
 
             if (!api.hasOwnProperty(funcName))
-                // Member not in API
+            // Member not in API
                 continue;
-
             const m = api[funcName];
-            if (typeof m === 'function')
+            if (typeof m === 'function'){
 
-                // Exporting promisified function
-                if (!chrome[apiName]){
-                    chromeP[apiName] = {};
-                }
-                chromeP[apiName][funcName] = promisify(m.bind(api), funcDef.cb);
-            }
-            else
+                exportObj[funcName] = promisify(m.bind(api), funcDef.cb);
+            }else{
                 // Sub-API, recurse this func with the mapped props
-                applyMap(m, funcDef.props, apiName);
+                exportObj[funcName] = {}
+                applyMap(m, funcDef.props, apiName, exportObj[funcName]);
+            }
         }
     }
 
@@ -105,12 +101,13 @@ const chromeP = {};
     function applyMaps(apiMaps) {
         for (let apiName in apiMaps) {
             const callbackApi = chrome[apiName];
-            if (!callbackApi)
+            if (!callbackApi) {
                 // Not supported by current permissions
                 continue;
-
+            }
+            chromeP[apiName] = {};
             const apiMap = apiMaps[apiName];
-            applyMap(callbackApi, apiMap, apiName);
+            applyMap(callbackApi, apiMap, apiName, chromeP[apiName]);
         }
     }
 
@@ -220,14 +217,14 @@ const chromeP = {};
             'listen', 'accept', 'setKeepAlive', 'setNoDelay', 'getInfo', 'getNetworkList'],
         sockets: [
             { n: 'tcp', props: [
-                'create','update','setPaused','setKeepAlive','setNoDelay','connect',
-                'disconnect','secure','send','close','getInfo','getSockets'] },
+                    'create','update','setPaused','setKeepAlive','setNoDelay','connect',
+                    'disconnect','secure','send','close','getInfo','getSockets'] },
             { n: 'tcpServer', props: [
-                'create','update','setPaused','listen','disconnect','close','getInfo','getSockets'] }, 
+                    'create','update','setPaused','listen','disconnect','close','getInfo','getSockets'] },
             { n: 'udp', props: [
-                'create','update','setPaused','bind','send','close','getInfo',
-                'getSockets','joinGroup','leaveGroup','setMulticastTimeToLive',
-                'setMulticastLoopbackMode','getJoinedGroups','setBroadcast'] }],
+                    'create','update','setPaused','bind','send','close','getInfo',
+                    'getSockets','joinGroup','leaveGroup','setMulticastTimeToLive',
+                    'setMulticastLoopbackMode','getJoinedGroups','setBroadcast'] }],
         system: [
             { n: 'cpu', props: ['getInfo'] },
             { n: 'memory', props: ['getInfo'] },
