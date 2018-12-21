@@ -1,6 +1,14 @@
 # Chrome Extension Async
-[![npm version](http://img.shields.io/npm/v/chrome-extension-async.svg)](https://www.npmjs.com/package/chrome-extension-async)
-[![bower version](https://img.shields.io/bower/v/chrome-extension-async.svg)](https://github.com/KeithHenry/chromeExtensionAsync/releases)
+t
+[![npm version](http://img.shields.io/npm/v/chromep.svg)](https://www.npmjs.com/package/chromp)
+
+Chromep is a fork of (chrome-extension-async)[https://github.com/KeithHenry/chromeExtensionAsync] by Keith Henry.
+The difference of chromep from the original progect is that it does not modify chrome variable. 
+It can be used as a ES6 module
+
+```javascript 
+import chromep from 'chromep';
+```
 
 Promise wrapper for the Chrome extension API so that it can be used with async/await rather than callbacks
 
@@ -14,21 +22,11 @@ Once activated against the Chrome API each callback function gets a `Promise` ve
 Chrome supports ES2017 syntax, so in extensions we can take full advantage of it.
 
 ## Installation
-Use bower
-```
-bower install chrome-extension-async
-```
 
-Or [npm](https://www.npmjs.com/package/chrome-extension-async)
+[npm](https://www.npmjs.com/package/chrome-extension-async)
 ```
 npm i chrome-extension-async
 ```
-
-Or [download](chrome-extension-async.js) `chrome-extension-async.js` file and include it directly:
-```html
-<script type="text/javascript" src="chrome-extension-async.js"></script>
-```
-
 TypeScript definitions for the altered API are in [`chrome-extension-async.d.ts`](chrome-extension-async.d.ts)
 
 You must reference [`chrome-extension-async.js`](chrome-extension-async.js) before your code attempts to use the features of this, as it needs to run across the Chrome API before you call it. `<script async>` is not currently supported, but you can use `<script defer>` so long as the scripts that use this are also `defer` and after it. 
@@ -39,23 +37,27 @@ Using the basic Chrome API, let's:
 - Execute a script in that tab
 - Do something with the first result of the script
 
+
+
 ```javascript
+import chromep from 'chromep';
+
 function startDoSomething(script, callback) {
     // Fire off the tabs query and continue in the callback
-    chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
+    chromep.tabs.query({ active: true, currentWindow: true }, function(tabs) {
         
         // Check API for any errors thrown
-        if (chrome.runtime.lastError) {
+        if (chromep.runtime.lastError) {
             // Handle errors from chrome.tabs.query
         }
         else {
             var activeTab = tabs[0];
 
             // Fire off the injected script and continue in the callback
-            chrome.tabs.executeScript(activeTab.id, { code: script }, function(results) {
+            chromep.tabs.executeScript(activeTab.id, { code: script }, function(results) {
                 
                 // Check API for any errors thrown, again
-                if (chrome.runtime.lastError) {
+                if (chromep.runtime.lastError) {
                     // Handle errors from chrome.tabs.executeScript
                 }
                 else {
@@ -80,7 +82,7 @@ async function doSomething(script) {
         const activeTab = tabs[0];
 
         // Execute the injected script and continue once we have the result
-        const results = await chrome.tabs.executeScript(activeTab.id, { code: script });
+        const results = await chromep.tabs.executeScript(activeTab.id, { code: script });
         const firstScriptResult = results[0];
         return firstScriptResult;
     }
@@ -100,7 +102,7 @@ async function checkUpdate() {
     try {
         // API is chrome.runtime.requestUpdateCheck(function (status, details) { ... });
         // Instead we use deconstruction-assignment and await
-        const { status, details } = await chrome.runtime.requestUpdateCheck();
+        const { status, details } = await chromep.runtime.requestUpdateCheck();
         alert(`Status: ${status}\nDetails: ${JSON.stringify(details)}`);
     }
     catch(err) {
@@ -132,7 +134,7 @@ const scriptToExecute = async function() {
 
 try{
     // The await returns the complete result of the function
-    const results = await chrome.tabs.executeAsyncFunction(
+    const results = await chromep.tabs.executeAsyncFunction(
         activeTab.id,       // If null this will be the current tab
         scriptToExecute,    // Will be .toString and applied to the {code:} property
         123, 'foo');        // Additional parameters will be passed to scriptToExecute
@@ -150,10 +152,6 @@ catch(err) {
 Unlike `chrome.tabs.executeScript` this can take a `function`, but note that it just converts the function to a string to pass it. This means that it must be self contained (it cannot call other user defined functions) and it cannot be native (as many serialise to `function foobar() { [native code] }`).
 
 This is held in its own file: [`execute-async-function.js`](execute-async-function.js):
-
-```html
-<script type="text/javascript" src="execute-async-function.js"></script>
-```
 
 This relies on a `chrome.runtime.onMessage.addListener` subscription, so it will fail if called from within a listener event.
 
