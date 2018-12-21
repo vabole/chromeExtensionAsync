@@ -1,3 +1,5 @@
+const chromeP = {};
+
 /** Wrap an API that uses callbacks with Promises
  * This expects the pattern function withCallback(arg1, arg2, ... argN, callback)
  * @author Keith Henry <keith.henry@evolutionjobs.co.uk>
@@ -85,8 +87,9 @@
 
             const m = api[funcName];
             if (typeof m === 'function')
+
                 // This is a function, wrap in a promise
-                api[funcName] = promisify(m.bind(api), funcDef.cb);
+                chromeP[funcName] = promisify(m.bind(api), funcDef.cb);
             else
                 // Sub-API, recurse this func with the mapped props
                 applyMap(m, funcDef.props);
@@ -241,3 +244,6 @@
         windows: ['get', 'getCurrent', 'getLastFocused', 'getAll', 'create', 'update', 'remove']
     });
 })();
+
+
+export default chromeP;
