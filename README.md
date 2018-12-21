@@ -1,4 +1,4 @@
-# Chrome Extension Async
+# ChromeP - fork of Chrome Extension Async
 
 [![npm version](http://img.shields.io/npm/v/chromep.svg)](https://www.npmjs.com/package/chromep)
 
