@@ -68,7 +68,7 @@ const chromeP = {};
     /** Promisify all the known functions in the map 
      * @param {object} api The Chrome native API to extend
      * @param {Array} apiMap Collection of sub-API and functions to promisify */
-    function applyMap(api, apiMap) {
+    function applyMap(api, apiMap, apiName) {
         if (!api)
             // Not supported by current permissions
             return;
@@ -89,10 +89,10 @@ const chromeP = {};
             if (typeof m === 'function')
 
                 // Exporting promisified function
-                chromeP[funcName] = promisify(m.bind(api), funcDef.cb);
+                chromeP[apiName][funcName] = promisify(m.bind(api), funcDef.cb);
             else
                 // Sub-API, recurse this func with the mapped props
-                applyMap(m, funcDef.props);
+                applyMap(m, funcDef.props, apiName);
         }
     }
 
@@ -106,7 +106,7 @@ const chromeP = {};
                 continue;
 
             const apiMap = apiMaps[apiName];
-            applyMap(callbackApi, apiMap);
+            applyMap(callbackApi, apiMap, apiName);
         }
     }
 
