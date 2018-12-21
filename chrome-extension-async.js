@@ -89,6 +89,9 @@ const chromeP = {};
             if (typeof m === 'function')
 
                 // Exporting promisified function
+                if (!chrome[apiName]){
+                    chromeP[apiName] = {};
+                }
                 chromeP[apiName][funcName] = promisify(m.bind(api), funcDef.cb);
             else
                 // Sub-API, recurse this func with the mapped props
