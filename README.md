@@ -2,8 +2,8 @@
 
 [![npm version](http://img.shields.io/npm/v/chromep.svg)](https://www.npmjs.com/package/chromep)
 
-Chromep is a fork of (chrome-extension-async)[https://github.com/KeithHenry/chromeExtensionAsync] by Keith Henry.
-The difference of chromep from the original progect is that it does not modify chrome variable. 
+Chromep is a fork of [chrome-extension-async](https://github.com/KeithHenry/chromeExtensionAsync) by Keith Henry.
+The difference of chromep is that it does not modify chrome variable. 
 It can be used as a ES6 module
 
 ```javascript 
