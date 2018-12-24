@@ -1,6 +1,6 @@
 {
   "name": "chromep",
-  "version": "3.3.3",
+  "version": "3.3.4",
   "description": "Promise wrapper for the Chrome extension API so that it can be used with async and await rather than callbacks",
   "main": "chrome-extension-async.js",
   "scripts": {
