@@ -4,13 +4,13 @@
 
 Chromep is a fork of [chrome-extension-async](https://github.com/KeithHenry/chromeExtensionAsync) by Keith Henry.
 The difference of chromep is that it does not modify chrome variable. 
-It can be used as a ES6 module
+It can be used as a ES6 module:
 
 ```javascript 
 import chromep from 'chromep';
 ```
 
-Promise wrapper for the Chrome extension API so that it can be used with async/await rather than callbacks
+Chromep provides promise wrapper for the Chrome extension API so that it can be used with async/await rather than callbacks.
 
 The [Extension API](https://developer.chrome.com/extensions) provided by Chrome uses callbacks. 
 However, Chrome now supports `async` and `await` keywords.
